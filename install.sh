@@ -3,10 +3,31 @@ urle () { [[ "${1}" ]] || return 1; local LANG=C i x; for (( i = 0; i < ${#1}; i
 
 # username and password input
 echo -e "\nIf you do not have an account you can register at https://flame.is.tue.mpg.de/ following the installation instruction."
-read -p "Username (FLAME):" username
-read -p "Password (FLAME):" password
-username=$(urle $username)
-password=$(urle $password)
+
+# Load the FLAME_USERNAME and FLAME_PASSWORD from the .env environment variables file if it exists
+if [ -f ".env" ]; then
+    source .env
+fi
+
+# If FLAME_USERNAME and FLAME_PASSWORD are not set, prompt the user for them
+if [ -z "$FLAME_USERNAME" ] || [ -z "$FLAME_PASSWORD" ]; then
+    echo -e "\n${COLOR}Please enter your FLAME credentials:"
+    read -p "Username (FLAME): " FLAME_USERNAME
+    read -sp "Password (FLAME): " FLAME_PASSWORD
+    echo
+fi
+
+# If FLAME_USERNAME and FLAME_PASSWORD are set, use them
+if [ -n "$FLAME_USERNAME" ] && [ -n "$FLAME_PASSWORD" ]; then
+    username=$FLAME_USERNAME
+    password=$FLAME_PASSWORD
+else
+    echo -e "\n${COLOR}Please enter your FLAME credentials:"
+    read -p "Username (FLAME): " username
+    read -sp "Password (FLAME): " password
+    username=$(urle $username)
+    password=$(urle $password)
+fi
 
 echo -e "\nDownloading FLAME..."
 mkdir -p data/FLAME2020/

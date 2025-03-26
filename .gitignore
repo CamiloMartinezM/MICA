@@ -69,3 +69,11 @@ testing/stirling/jobs
 
 demo/arcface
 demo/output
+data/FLAME2020
+
+## Privacy
+demo/input/my_subject.png
+.env 
+
+# cluster
+cluster/

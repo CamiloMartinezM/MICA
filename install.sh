@@ -1,4 +1,18 @@
 #!/bin/bash
+
+# First install the environment using micromamba (there, gdown is installed)
+echo -e "\nInstalling conda env..."
+conda env create -f environment.yml
+
+echo -e "\nInstallation has finished!"
+
+# Source the micromamba configuration
+source configure_environment.sh
+
+# Activate the environment
+micromamba activate $ENV_NAME
+
+# Function to URL encode a string
 urle () { [[ "${1}" ]] || return 1; local LANG=C i x; for (( i = 0; i < ${#1}; i++ )); do x="${1:i:1}"; [[ "${x}" == [a-zA-Z0-9.~-] ]] && echo -n "${x}" || printf '%%%02X' "'${x}"; done; echo; }
 
 # username and password input
@@ -57,8 +71,3 @@ if [ ! -d ~/.insightface/models/buffalo_l ]; then
   gdown --id 1navJMy0DTr1_DHjLWu1i48owCPvXWfYc -O ~/.insightface/models/buffalo_l.zip
   unzip ~/.insightface/models/buffalo_l.zip -d ~/.insightface/models/buffalo_l
 fi
-
-echo -e "\nInstalling conda env..."
-conda env create -f environment.yml
-
-echo -e "\nInstallation has finished!"

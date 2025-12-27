@@ -13,7 +13,6 @@
 # for Intelligent Systems. All rights reserved.
 #
 # Contact: mica@tue.mpg.de
-import os
 import pickle
 
 import numpy as np
@@ -21,14 +20,16 @@ import torch
 import torch.nn as nn
 from trimesh import Trimesh
 
+from utils.config import ROOT_DIR
+
 
 def to_tensor(array, dtype=torch.float32):
-    if 'torch.tensor' not in str(type(array)):
+    if "torch.tensor" not in str(type(array)):
         return torch.tensor(array, dtype=dtype)
 
 
 def to_np(array, dtype=np.float32):
-    if 'scipy.sparse' in str(type(array)):
+    if "scipy.sparse" in str(type(array)):
         array = array.todense()
     return np.array(array, dtype=dtype)
 
@@ -42,21 +43,24 @@ class Struct(object):
 class Masking(nn.Module):
     def __init__(self, config):
         super(Masking, self).__init__()
-        ROOT_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '..')
-        with open(f'{ROOT_DIR}/data/FLAME2020/FLAME_masks/FLAME_masks.pkl', 'rb') as f:
-            ss = pickle.load(f, encoding='latin1')
+        with open(f"{ROOT_DIR}/data/FLAME2020/FLAME_masks/FLAME_masks.pkl", "rb") as f:
+            ss = pickle.load(f, encoding="latin1")
             self.masks = Struct(**ss)
 
-        with open(f'{ROOT_DIR}/data/FLAME2020/generic_model.pkl', 'rb') as f:
-            ss = pickle.load(f, encoding='latin1')
+        with open(f"{ROOT_DIR}/data/FLAME2020/generic_model.pkl", "rb") as f:
+            ss = pickle.load(f, encoding="latin1")
             flame_model = Struct(**ss)
 
         self.masked_faces = None
 
         self.cfg = config.mask_weights
         self.dtype = torch.float32
-        self.register_buffer('faces', to_tensor(to_np(flame_model.f, dtype=np.int64), dtype=torch.long))
-        self.register_buffer('vertices', to_tensor(to_np(flame_model.v_template), dtype=self.dtype))
+        self.register_buffer(
+            "faces", to_tensor(to_np(flame_model.f, dtype=np.int64), dtype=torch.long)
+        )
+        self.register_buffer(
+            "vertices", to_tensor(to_np(flame_model.v_template), dtype=self.dtype)
+        )
 
         self.neighbours = {}
         for f in self.faces.numpy():

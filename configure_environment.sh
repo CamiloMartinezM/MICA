@@ -13,7 +13,7 @@ unset __mamba_setup
 # <<< mamba initialize <<<
 
 # Name of the conda environment (must match environment.yml)
-export ENV_NAME="tracker"
+export ENV_NAME="MICA"
 
 # CUDA version to use with PyTorch in URL https://download.pytorch.org/whl/$PYTORCH_CUDA_VERSION
-export PYTORCH_CUDA_VERSION="cu118"
+export PYTORCH_CUDA_VERSION="cu116"
